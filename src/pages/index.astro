@@ -1,0 +1,295 @@
+---
+import '@fontsource-variable/dm-sans';
+import '../styles/landing.css';
+import Phone from '../components/Phone.astro';
+import changelog from '../data/changelog.json';
+import {
+  APP_URL, AUDS, DAY, DOCS_URL, EMAIL, GITHUB_URL, HERO, NAV, PASOS, ROLES, SITE_URL, SWAPS, TERMS_URL, TITLES, TOUR,
+  type Aud, type Screen,
+} from '../data/content';
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const auds: Aud[] = ['liceos', 'est'];
+const screens = TOUR.map(t => t.key) as Screen[];
+const releases = changelog.releases.slice(0, 5);
+const current = releases[0]?.version ?? '';
+const short = (v: string) => v.replace(/-beta$/, '');
+const fmtDate = (d: string) => new Date(`${d}T12:00:00`).toLocaleDateString('es-CL', { day: 'numeric', month: 'short' }).replace('.', '');
+const description = 'HaNet es la app de los liceos chilenos: horario, Calendar del curso, clases, notas, eventos y alianzas en un mismo lugar. Para estudiantes, docentes y equipos directivos.';
+const logo = 'M5.02344 40.8102V2.18981V0L15.3522 9.55556V19.5093L20.5166 20.1065V13.338L34.0234 14.5324V16.7222V26.2778V28.4676L20.5166 29.662V22.8935L15.3522 23.4907V33.4444L5.02344 43V40.8102Z';
+const arrow = 'M7 17L17 7M9 7h8v8';
+---
+<!doctype html>
+<html lang="es" data-view="liceos">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HaNet · Todo tu liceo, en una sola app</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#282829" />
+  <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+  <link rel="canonical" href={SITE_URL} />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_CL" />
+  <meta property="og:title" content="HaNet · Todo tu liceo, en una sola app" />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={SITE_URL} />
+  <meta property="og:image" content={new URL(`${base}/og.png`, Astro.site).href} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <script is:inline>
+    // La vista para estudiantes se abre con #estudiantes; se decide antes de pintar.
+    document.documentElement.classList.add('js');
+    if (location.hash === '#estudiantes') document.documentElement.dataset.view = 'est';
+  </script>
+</head>
+<body>
+<a class="skip" href="#contenido">Ir al contenido</a>
+
+<header class="wrap top">
+  <a href="#inicio" class="brand" aria-label="HaNet, inicio">
+    <svg width="22" height="30" viewBox="4 0 31 43" aria-hidden="true"><path d={logo} fill="#EF2274"></path></svg>
+    <span class="brand__name">HaNet</span>
+    <span class="pill pill--quiet">Beta</span>
+  </a>
+  {auds.map(a => (
+    <nav class="top__nav" aria-label="Secciones" data-aud={a}>
+      {NAV[a].map(n => <a href={n.href}>{n.label}</a>)}
+    </nav>
+  ))}
+  <a class="btn btn--light btn--icon" href={APP_URL}>Abrir HaNet
+    <span class="btn__dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={arrow}></path></svg></span>
+  </a>
+</header>
+
+<main id="contenido">
+<!-- Hero -->
+<section id="inicio" class="wrap hero">
+  <div class="seg" role="group" aria-label="Elige tu vista">
+    {AUDS.map(a => <button type="button" class="seg__btn" data-pick={a.id} aria-pressed={a.id === 'liceos' ? 'true' : 'false'}>{a.name}</button>)}
+  </div>
+  {auds.map(a => (
+    <h1 class="hero__title" data-aud={a} aria-label={TITLES[a]}>
+      {TITLES[a].split(' ').map(w => (
+        <span class="word" aria-hidden="true"><span class="word__ghost">{w}</span><span class="word__ink">{w}</span></span>
+      ))}
+    </h1>
+  ))}
+  {auds.map(a => (
+    <div class="hero__row" data-aud={a}>
+      <p class="hero__sub">{HERO[a].sub}</p>
+      <div class="actions">
+        <a class="btn btn--pink btn--icon" href={HERO[a].mainHref}>{HERO[a].main}
+          <span class="btn__dot"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={arrow}></path></svg></span>
+        </a>
+        <a class="btn btn--line" href={HERO[a].otherHref}>{HERO[a].other}</a>
+      </div>
+    </div>
+  ))}
+  <p class="fine">En beta en el Liceo Camilo Henríquez de Temuco · iPhone, Android y web</p>
+
+  <!-- El día que avanza -->
+  <div class="day" data-day>
+    <div class="day__list">
+      <span class="day__label">Hoy · jueves 20 de noviembre</span>
+      <div class="day__window">
+        <ol class="day__rows" data-rows>
+          {DAY.map(b => (
+            <li class:list={['day__row', { 'day__row--pause': b.pause }]}>
+              <span class="day__time">{b.t}</span>
+              <span class="day__subject">{b.s}</span>
+              {b.test && <span class="pill pill--test"><span class="dot"></span>Prueba</span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+    <div class="day__side">
+      <div class="now" aria-live="off">
+        <div class="now__head"><span data-now-label>Ahora en clases</span>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V6.5A2.5 2.5 0 0 1 6.5 4H20v13H6.5A2.5 2.5 0 0 0 4 19.5 2.5 2.5 0 0 0 6.5 22H20"></path></svg>
+        </div>
+        <div class="now__subject" data-now-subject>{DAY[3].s}</div>
+        <div class="now__where" data-now-where>{DAY[3].where}</div>
+        <div class="now__bar"><div data-now-bar></div></div>
+        <div class="now__times"><span data-now-start>{DAY[3].t}</span><span data-now-end>{DAY[3].end}</span></div>
+      </div>
+      <div class="tile">
+        <span class="tile__icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg></span>
+        <div><div class="tile__small">Próxima evaluación</div><div class="tile__big">Prueba de Química · hoy, 10:30</div></div>
+      </div>
+      <div class="tile tile--split">
+        <div class="tile__big">Calificaciones</div>
+        <span class="pill pill--stripes">2 notas nuevas</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Antes y con HaNet -->
+<section class="wrap section">
+  <h2 class="h2">Menos grupos, menos papeles, menos apps.</h2>
+  {auds.map(a => (
+    <ul class="swaps" data-aud={a}>
+      {SWAPS[a].map(s => (
+        <li class="swap">
+          <span class="swap__before"><span class="sr">Antes: </span>{s.before}</span>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
+          <span class="swap__after"><span class="sr">Con HaNet: </span>{s.after}</span>
+        </li>
+      ))}
+    </ul>
+  ))}
+</section>
+
+<!-- Recorrido por los módulos -->
+<section id="modulos" class="wrap section tour">
+  <div class="tour__steps">
+    {TOUR.map((t, i) => (
+      <article class="step" data-step={i} data-key={t.key}>
+        {auds.map(a => t.head?.[a] && (
+          <div class="step__head" data-aud={a}>
+            <h2 class="h2">{t.head[a]}</h2>
+            {t.headText?.[a] && <p class="lead">{t.headText[a]}</p>}
+          </div>
+        ))}
+        <div class="step__body">
+          <span class="pill pill--quiet">{t.tag}</span>
+          <h3 class="step__name">{t.name}</h3>
+          {t.sub && <p class="step__sub">{t.sub}</p>}
+          {auds.map(a => <p class="step__text" data-aud={a}>{t.text[a]}</p>)}
+          <div class="step__phone">
+            <Phone screens={[t.key]} active={t.key} class="phone--step" />
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+  <div class="tour__aside" aria-hidden="true">
+    <div class="tour__sticky">
+      <Phone screens={screens} active="calendar" eager class="phone--tour" />
+      <div class="dots">{TOUR.map((_, i) => <span data-dot={i}></span>)}</div>
+    </div>
+  </div>
+</section>
+<p class="wrap fine" data-aud="liceos">Próximamente: Notebook, el libro de clases digital, después de la beta.</p>
+
+<!-- Para cada rol (vista liceos) -->
+<section class="wrap section" data-aud="liceos">
+  <h2 class="h2">Cada rol ve lo suyo.</h2>
+  <div class="seg seg--scroll" role="tablist" aria-label="Roles">
+    {ROLES.map((r, i) => (
+      <button type="button" class="seg__btn" role="tab" id={`rol-${i}`} aria-controls={`rol-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} data-role={i}>{r.name}</button>
+    ))}
+  </div>
+  {ROLES.map((r, i) => (
+    <div class="role" role="tabpanel" id={`rol-panel-${i}`} aria-labelledby={`rol-${i}`} hidden={i !== 0}>
+      <p class="role__intro">{r.intro}</p>
+      <ul class="role__grid">
+        {r.items.map(it => (
+          <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>{it}</li>
+        ))}
+      </ul>
+    </div>
+  ))}
+</section>
+
+<!-- Cómo empezar -->
+<section id="empezar" class="wrap section">
+  {auds.map(a => (
+    <div class="card start" data-aud={a}>
+      <svg class="start__mark" viewBox="4 0 31 43" aria-hidden="true"><path d={logo} fill="#EF2274"></path></svg>
+      <h2 class="h2">{PASOS[a].title}</h2>
+      <p class="lead">{PASOS[a].text}</p>
+      <ol class="steps" data-steps>
+        {PASOS[a].steps.map((s, i) => (
+          <li><span class="steps__n">{PASOS[a].labels[i]}</span><span class="steps__t">{s}</span></li>
+        ))}
+      </ol>
+      <div class="actions">
+        <a class="btn btn--light" href={PASOS[a].mainHref}>{PASOS[a].main}</a>
+        <a class="btn btn--line" href={PASOS[a].otherHref}>{PASOS[a].other}</a>
+      </div>
+      <p class="fine">{PASOS[a].foot}</p>
+    </div>
+  ))}
+</section>
+
+<!-- Contribuir y novedades -->
+<section id="novedades" class="wrap section news">
+  <div class="news__text">
+    <h2 class="h2">Contribuye al proyecto HaNet.</h2>
+    <p class="lead">¿Tienes ideas, quejas o encontraste algún error? ¡Avísanos!<br />Entre todos hacemos de HaNet la mejor herramienta open source para la educación. Contribuye en GitHub o por correo.</p>
+    <div class="chips">
+      <a class="chip" href={GITHUB_URL}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12 12 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"></path></svg>Código en GitHub</a>
+      <a class="chip" href={`mailto:${EMAIL}?subject=${encodeURIComponent('Sugerencia para HaNet')}`}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="M4 7l8 6 8-6"></path></svg>Enviar una sugerencia</a>
+    </div>
+  </div>
+  <div class="card releases">
+    <div class="releases__head">
+      <span class="releases__logo"><svg width="20" height="28" viewBox="4 0 31 43" aria-hidden="true"><path d={logo} fill="#EF2274"></path></svg></span>
+      <div><h3 class="releases__title">Novedades</h3><div class="releases__sub">Versión actual: {current}</div></div>
+    </div>
+    <ul class="releases__list">
+      {releases.map(r => (
+        <li><span class="releases__v">{short(r.version)}</span><span class="releases__name">{r.title}</span><span class="releases__date">{fmtDate(r.date)}</span></li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<!-- Para instituciones -->
+<section id="instituciones" class="wrap section">
+  <div class="card card--pink cta" data-aud="liceos">
+    <div class="cta__main">
+      <h2 class="h2">¿Quieres HaNet en tu liceo?</h2>
+      <p class="cta__text">Haz que tu liceo sea parte de HaNet beta por un precio reducido, con todos los módulos incluidos. Escríbenos a este correo.</p>
+      <div class="mail">
+        <a class="mail__addr" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        <button type="button" class="mail__copy" data-copy={EMAIL} data-done="Correo copiado">Copiar correo</button>
+      </div>
+    </div>
+    <ul class="cta__list">
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"></path><circle cx="12" cy="9.5" r="2.5"></circle></svg>Base de datos en Santiago de Chile, con una tasa de caídas casi nula.</li>
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-3 8-7 9.5-4-1.5-7-5.1-7-9.5V6z"></path></svg>Sistema seguro y cerrado: solo entran tu institución y tus estudiantes.</li>
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"></rect><rect x="13" y="4" width="7" height="7" rx="2"></rect><rect x="4" y="13" width="7" height="7" rx="2"></rect><rect x="13" y="13" width="7" height="7" rx="2"></rect></svg>Disponible para iPhone, Android y navegadores.</li>
+    </ul>
+  </div>
+  <div class="card card--pink cta" data-aud="est">
+    <div class="cta__main">
+      <h2 class="h2">¿Tu liceo todavía no usa HaNet?</h2>
+      <p class="cta__text">¡Pídelo! Muéstrale esta página a tu profe jefe, al CEE o a la dirección. Cuando tu liceo se sume, entras con su código.</p>
+      <div class="actions">
+        <button type="button" class="btn btn--dark" data-copy={SITE_URL} data-done="Link copiado">Copiar el link</button>
+        <button type="button" class="btn btn--line-dark" data-pick="liceos" data-top>Ver la página para liceos</button>
+      </div>
+    </div>
+    <ul class="cta__list">
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.4-3 8-7 9.5-4-1.5-7-5.1-7-9.5V6z"></path></svg>Sin chats ni seguidores: HaNet es solo para tu liceo.</li>
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"></rect><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"></path></svg>Protege tus notas con Face ID o tu huella, si quieres.</li>
+      <li><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5a14 14 0 0 1 18 0M6.5 13a9 9 0 0 1 11 0M10 16.5a4 4 0 0 1 4 0"></path><circle cx="12" cy="20" r="0.8" fill="currentColor"></circle></svg>Tu horario y tu Calendar se abren aunque no tengas internet.</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<footer class="wrap foot">
+  <div class="foot__main">
+    <div class="brand"><svg width="18" height="25" viewBox="4 0 31 43" aria-hidden="true"><path d={logo} fill="#EF2274"></path></svg><span class="brand__name">HaNet</span></div>
+    <p>Preguntas o sugerencias: <a href={`mailto:${EMAIL}`}>{EMAIL}</a></p>
+    <p class="fine">© 2026 HaNet · Hecho en Chile</p>
+    <p class="fine">HaNet es un proyecto independiente y open source. No está afiliado al Mineduc ni a ninguna institución de la red HaNet.</p>
+  </div>
+  <nav class="foot__nav" aria-label="Pie de página">
+    <a href={APP_URL}>Abrir HaNet</a>
+    <a href={DOCS_URL}>Documentación</a>
+    <a href="#novedades">Novedades</a>
+    <a href={TERMS_URL}>Términos y privacidad</a>
+    <a href={GITHUB_URL}>GitHub</a>
+  </nav>
+</footer>
+
+<script>
+  import '../scripts/landing';
+</script>
+</body>
+</html>

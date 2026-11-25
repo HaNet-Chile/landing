@@ -1,0 +1,16 @@
+{
+  "name": "hanet-landing",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "changelog": "node scripts/sync-changelog.mjs",
+    "build": "node scripts/sync-changelog.mjs && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/dm-sans": "^5.2.8",
+    "astro": "^7.4.13"
+  }
+}
