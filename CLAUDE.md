@@ -8,4 +8,4 @@ Landing del proyecto HaNet (`hanet.muxp.art`), Astro estático. La app vive en `
 - Diseño: tema oscuro de HaNet, rosa `#EF2274` como único acento fuerte, control activo `#C7C6CF` con texto `#282829`, botones en píldora, títulos en Google Sans Flex y texto en DM Sans. Sin emojis.
 - Las capturas usan datos de ejemplo (liceo ficticio), nunca personas reales ni fotos con derechos.
 - Repositorio público: nunca secretos ni datos de estudiantes. Contacto: `muxp@muxp.art` (no usar `hanet.cl`).
-- Comprobar con `npm run build` y mirar el sitio en 390 px y 1440 px antes de entregar. Publicar (hosting o dominio) necesita el OK de muxp.
+- Se publica en Cloudflare (Workers & Pages, conectado a este repo: cada push a `main` publica; build `npm run build`, salida `dist`). Comprobar con `npm run build` y mirar el sitio en 390 px y 1440 px antes de entregar. Tocar el dominio necesita el OK de muxp.

@@ -1,0 +1,6 @@
+// Cloudflare: el sitio es estático (dist/ después de `npm run build`).
+{
+  "name": "hanet-landing",
+  "compatibility_date": "2026-11-01",
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" }
+}

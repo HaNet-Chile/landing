@@ -13,4 +13,6 @@ npm run build    # sitio estático en dist/
 - Capturas del teléfono: `public/screens/` (la app web con datos de ejemplo, sin personas reales).
 - Novedades: `npm run build` trae las últimas versiones de `constants/changelog.json` de hanetcl (`scripts/sync-changelog.mjs`); sin red, usa la copia de `src/data/changelog.json`.
 
+Se publica en Cloudflare: cada push a `main` lo construye (`npm run build`, carpeta `dist`).
+
 Este repositorio es público: nunca subas secretos ni datos de estudiantes. La fuente Google Sans Flex va con su licencia (`src/assets/fonts/OFL.txt`).
