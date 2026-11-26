@@ -1,6 +1,8 @@
 // Cloudflare: el sitio es estático (dist/ después de `npm run build`).
+// `previews` vacío deja que cada rama tenga su vista previa (`wrangler preview`).
 {
   "name": "hanet-landing",
   "compatibility_date": "2026-11-01",
-  "assets": { "directory": "./dist", "not_found_handling": "404-page" }
+  "assets": { "directory": "./dist", "not_found_handling": "404-page" },
+  "previews": {}
 }
