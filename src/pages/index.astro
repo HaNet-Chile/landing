@@ -2,6 +2,9 @@
 import '@fontsource-variable/dm-sans';
 import '../styles/landing.css';
 import Phone from '../components/Phone.astro';
+import HeroTitle from '../components/react/HeroTitle';
+import Marquee from '../components/react/Marquee';
+import ScratchCard from '../components/react/ScratchCard';
 import changelog from '../data/changelog.json';
 import {
   APP_URL, AUDS, DAY, DOCS_URL, EMAIL, GITHUB_URL, HERO, NAV, PASOS, ROLES, SITE_URL, SWAPS, TERMS_URL, TITLES, TOUR,
@@ -43,6 +46,7 @@ const arrow = 'M7 17L17 7M9 7h8v8';
   </script>
 </head>
 <body>
+<div class="ambient" aria-hidden="true"><span></span><span></span></div>
 <a class="skip" href="#contenido">Ir al contenido</a>
 
 <header class="wrap top">
@@ -67,13 +71,7 @@ const arrow = 'M7 17L17 7M9 7h8v8';
   <div class="seg" role="group" aria-label="Elige tu vista">
     {AUDS.map(a => <button type="button" class="seg__btn" data-pick={a.id} aria-pressed={a.id === 'liceos' ? 'true' : 'false'}>{a.name}</button>)}
   </div>
-  {auds.map(a => (
-    <h1 class="hero__title" data-aud={a} aria-label={TITLES[a]}>
-      {TITLES[a].split(' ').map(w => (
-        <span class="word" aria-hidden="true"><span class="word__ghost">{w}</span><span class="word__ink">{w}</span></span>
-      ))}
-    </h1>
-  ))}
+  <HeroTitle client:load titles={TITLES} />
   {auds.map(a => (
     <div class="hero__row" data-aud={a}>
       <p class="hero__sub">{HERO[a].sub}</p>
@@ -125,8 +123,12 @@ const arrow = 'M7 17L17 7M9 7h8v8';
   </div>
 </section>
 
+<!-- Cinta de módulos -->
+<Marquee client:visible rows={[['Calendar', 'ClassHall', 'Eventos', 'Notas', 'Alianzas'], ['Feed', 'Entradas', 'Herramientas', 'HaNet ID', 'Horario']]} />
+
 <!-- Antes y con HaNet -->
 <section class="wrap section">
+  <p class="kicker"><span class="kicker__n">01</span>Sin caos</p>
   <h2 class="h2">Menos grupos, menos papeles, menos apps.</h2>
   {auds.map(a => (
     <ul class="swaps" data-aud={a}>
@@ -142,10 +144,16 @@ const arrow = 'M7 17L17 7M9 7h8v8';
 </section>
 
 <!-- Recorrido por los módulos -->
-<section id="modulos" class="wrap section tour">
-  <div class="tour__steps">
+<section id="modulos" class="wrap section tour" data-tour>
+  <p class="kicker tour__kicker"><span class="kicker__n">02</span>Módulos</p>
+  {auds.map(a => (
+    <div class="tour__mhead" data-aud={a}>
+      <h2 class="h2">{TOUR[0].head?.[a]}</h2>
+    </div>
+  ))}
+  <div class="tour__steps" data-carousel>
     {TOUR.map((t, i) => (
-      <article class="step" data-step={i} data-key={t.key}>
+      <article class="step" data-step={i} data-key={t.key} data-theme={t.key}>
         {auds.map(a => t.head?.[a] && (
           <div class="step__head" data-aud={a}>
             <h2 class="h2">{t.head[a]}</h2>
@@ -166,15 +174,29 @@ const arrow = 'M7 17L17 7M9 7h8v8';
   </div>
   <div class="tour__aside" aria-hidden="true">
     <div class="tour__sticky">
-      <Phone screens={screens} active="calendar" eager class="phone--tour" />
+      <div class="tilt" data-tilt><Phone screens={screens} active="calendar" eager class="phone--tour" /></div>
       <div class="dots">{TOUR.map((_, i) => <span data-dot={i}></span>)}</div>
     </div>
   </div>
 </section>
+<div class="wrap carousel-hint" aria-hidden="true"><span>Desliza para explorar</span><div class="dots dots--m">{TOUR.map((_, i) => <span data-mdot={i}></span>)}</div></div>
 <p class="wrap fine" data-aud="liceos">Próximamente: Notebook, el libro de clases digital, después de la beta.</p>
+
+<!-- Raspar una nota -->
+<section class="wrap section scratch-section">
+  <div class="scratch-section__text">
+    <p class="kicker"><span class="kicker__n">03</span>Notas</p>
+    <h2 class="h2" data-aud="liceos">Así reciben sus notas tus estudiantes.</h2>
+    <h2 class="h2" data-aud="est">Tu nota llega tapada. Ráspala.</h2>
+    <p class="lead" data-aud="liceos">Cada nota llega tapada y se destapa en pantalla completa, con el dedo. Pruébalo aquí mismo.</p>
+    <p class="lead" data-aud="est">Cuando tu docente publica una nota, te llega un aviso que nunca la muestra. La destapas tú, con el dedo. Pruébalo aquí mismo.</p>
+  </div>
+  <ScratchCard client:visible subject="Lenguaje y Literatura" title="Ensayo argumentativo" date="16 de noviembre" grade="6,7" />
+</section>
 
 <!-- Para cada rol (vista liceos) -->
 <section class="wrap section" data-aud="liceos">
+  <p class="kicker"><span class="kicker__n">04</span>Roles</p>
   <h2 class="h2">Cada rol ve lo suyo.</h2>
   <div class="seg seg--scroll" role="tablist" aria-label="Roles">
     {ROLES.map((r, i) => (
@@ -198,6 +220,7 @@ const arrow = 'M7 17L17 7M9 7h8v8';
   {auds.map(a => (
     <div class="card start" data-aud={a}>
       <svg class="start__mark" viewBox="4 0 31 43" aria-hidden="true"><path d={logo} fill="#EF2274"></path></svg>
+      <p class="kicker"><span class="kicker__n">{a === 'liceos' ? '05' : '04'}</span>{a === 'liceos' ? 'Cómo empezar' : 'Crear cuenta'}</p>
       <h2 class="h2">{PASOS[a].title}</h2>
       <p class="lead">{PASOS[a].text}</p>
       <ol class="steps" data-steps>
@@ -217,6 +240,7 @@ const arrow = 'M7 17L17 7M9 7h8v8';
 <!-- Contribuir y novedades -->
 <section id="novedades" class="wrap section news">
   <div class="news__text">
+    <p class="kicker"><span class="kicker__n" data-aud="liceos">06</span><span class="kicker__n" data-aud="est">05</span>Open source</p>
     <h2 class="h2">Contribuye al proyecto HaNet.</h2>
     <p class="lead">¿Tienes ideas, quejas o encontraste algún error? ¡Avísanos!<br />Entre todos hacemos de HaNet la mejor herramienta open source para la educación. Contribuye en GitHub o por correo.</p>
     <div class="chips">

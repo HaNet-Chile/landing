@@ -1,6 +1,21 @@
 {
   "releases": [
     {
+      "version": "0.15.2-beta",
+      "date": "2026-11-25",
+      "title": "Panel web para liceos"
+    },
+    {
+      "version": "0.15.1-beta",
+      "date": "2026-11-25",
+      "title": "Plazos de entrega"
+    },
+    {
+      "version": "0.15.0-beta",
+      "date": "2026-11-25",
+      "title": "Notificaciones desde Organizar"
+    },
+    {
       "version": "0.14.6-beta",
       "date": "2026-11-25",
       "title": "Entradas para invitados"
@@ -14,21 +29,6 @@
       "version": "0.14.4-beta",
       "date": "2026-11-25",
       "title": "Cristal en el iPhone"
-    },
-    {
-      "version": "0.14.3-beta",
-      "date": "2026-11-21",
-      "title": "Más cerca de Santiago"
-    },
-    {
-      "version": "0.14.2-beta",
-      "date": "2026-11-21",
-      "title": "Sonidos en la puerta"
-    },
-    {
-      "version": "0.14.1-beta",
-      "date": "2026-11-19",
-      "title": "Escaneo más rápido"
     }
   ]
 }

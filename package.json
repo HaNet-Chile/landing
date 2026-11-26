@@ -10,7 +10,13 @@
     "preview": "astro preview"
   },
   "dependencies": {
+    "@astrojs/react": "^7.1.9",
     "@fontsource-variable/dm-sans": "^5.2.8",
-    "astro": "^7.4.13"
+    "@types/react": "^19.3.3",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.4.13",
+    "motion": "^14.14.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   }
 }
