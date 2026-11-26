@@ -7,7 +7,7 @@ import Marquee from '../components/react/Marquee';
 import ScratchCard from '../components/react/ScratchCard';
 import changelog from '../data/changelog.json';
 import {
-  APP_URL, AUDS, DAY, DOCS_URL, EMAIL, GITHUB_URL, HERO, NAV, PASOS, ROLES, SITE_URL, SWAPS, TERMS_URL, TITLES, TOUR,
+  APP_URL, AUDS, DAY, DOCS_URL, EMAIL, GITHUB_URL, HERO, NAV, PANEL_URL, PASOS, ROLES, SITE_URL, STATUS_URL, SWAPS, TERMS_URL, TITLES, TOUR,
   type Aud, type Screen,
 } from '../data/content';
 
@@ -305,8 +305,10 @@ const arrow = 'M7 17L17 7M9 7h8v8';
   </div>
   <nav class="foot__nav" aria-label="Pie de página">
     <a href={APP_URL}>Abrir HaNet</a>
+    <a href={PANEL_URL}>Panel para liceos</a>
     <a href={DOCS_URL}>Documentación</a>
     <a href="#novedades">Novedades</a>
+    <a href={STATUS_URL}>Estado de HaNet</a>
     <a href={TERMS_URL}>Términos y privacidad</a>
     <a href={GITHUB_URL}>GitHub</a>
   </nav>

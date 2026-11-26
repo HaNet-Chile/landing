@@ -1,6 +1,8 @@
 // Textos del landing. Las dos vistas: "liceos" (la predeterminada) y "est" (estudiantes).
 export const APP_URL = 'https://app.hanet.muxp.art';
 export const DOCS_URL = 'https://docs.hanet.muxp.art/';
+export const PANEL_URL = 'https://panel.hanet.muxp.art';
+export const STATUS_URL = 'https://status.hanet.muxp.art';
 export const TERMS_URL = 'https://id.hanet.muxp.art/terminos';
 export const GITHUB_URL = 'https://github.com/HaNet-Chile/hanetcl';
 export const EMAIL = 'muxp@muxp.art';
