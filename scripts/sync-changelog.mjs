@@ -1,9 +1,9 @@
 // Trae las últimas versiones de HaNet desde el changelog de la app
-// (constants/changelog.json de martinuxp/hanetcl). Si no hay red, se queda
+// (constants/changelog.json de HaNet-Chile/hanetcl). Si no hay red, se queda
 // con la copia guardada en src/data/changelog.json.
 import { writeFile } from 'node:fs/promises';
 
-const URL = 'https://raw.githubusercontent.com/martinuxp/hanetcl/auditoria-ui-y-auth-ydxytn/constants/changelog.json';
+const URL = 'https://raw.githubusercontent.com/HaNet-Chile/hanetcl/auditoria-ui-y-auth-ydxytn/constants/changelog.json';
 const OUT = new globalThis.URL('../src/data/changelog.json', import.meta.url);
 
 try {

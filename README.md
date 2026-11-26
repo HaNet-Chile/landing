@@ -1,6 +1,6 @@
 # HaNet · landing
 
-La página del proyecto [HaNet](https://github.com/martinuxp/hanetcl), para `hanet.muxp.art`. Hecha con [Astro](https://astro.build): una sola página estática, sin backend ni cookies.
+La página del proyecto [HaNet](https://github.com/HaNet-Chile/hanetcl), para `hanet.muxp.art`. Hecha con [Astro](https://astro.build): una sola página estática, sin backend ni cookies.
 
 ```sh
 npm install

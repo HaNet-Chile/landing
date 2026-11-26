@@ -1,6 +1,6 @@
 # HaNet landing — guía para Claude
 
-Landing del proyecto HaNet (`hanet.muxp.art`), Astro estático. La app vive en `martinuxp/hanetcl` y la documentación en `martinuxp/hanetcl-docs`; sus CLAUDE.md tienen el detalle del producto.
+Landing del proyecto HaNet (`hanet.muxp.art`), Astro estático. La app vive en `HaNet-Chile/hanetcl` y la documentación en `HaNet-Chile/docs` (docs.hanet.muxp.art); sus CLAUDE.md tienen el detalle del producto.
 
 - Responder en español. muxp escribe en español chileno informal; los textos del landing los escribió él: venden (beneficio primero, en imperativo, frases cortas), sin explicar el funcionamiento interno. Corregir ortografía sin cambiar su redacción.
 - Todo lo que se diga debe ser cierto: nada de cifras inventadas, testimonios ni logos de clientes. "Base de datos en Santiago": las bases de Firestore y las funciones están en Santiago (las programadas en São Paulo); la región de Storage no está confirmada, así que nunca "todos los datos".
