@@ -5,24 +5,6 @@ root.classList.add('js');
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 type View = 'liceos' | 'est';
 
-// ---------- Título que se enciende palabra por palabra ----------
-let wordTimer = 0;
-function lightTitle() {
-  window.clearInterval(wordTimer);
-  const view = root.dataset.view as View;
-  const h1 = document.querySelector<HTMLElement>(`.hero__title[data-aud="${view}"]`);
-  if (!h1) return;
-  const words = Array.from(h1.querySelectorAll<HTMLElement>('.word'));
-  words.forEach(w => w.classList.remove('on'));
-  h1.classList.remove('is-lit');
-  if (reduce) { words.forEach(w => w.classList.add('on')); return; }
-  let i = 0;
-  wordTimer = window.setInterval(() => {
-    if (i >= words.length) { window.clearInterval(wordTimer); h1.classList.add('is-lit'); return; }
-    words[i++].classList.add('on');
-  }, 170);
-}
-
 // ---------- Vistas ----------
 function setView(view: View, opts: { top?: boolean } = {}) {
   root.dataset.view = view;
@@ -31,7 +13,7 @@ function setView(view: View, opts: { top?: boolean } = {}) {
   });
   const hash = view === 'est' ? '#estudiantes' : ' ';
   try { history.replaceState(null, '', hash.trim() ? hash : location.pathname + location.search); } catch { /* sin historial */ }
-  lightTitle();
+  window.dispatchEvent(new Event('hanet:view'));
   restartSteps();
   if (opts.top) window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
 }
@@ -47,7 +29,6 @@ window.addEventListener('hashchange', () => {
 document.querySelectorAll<HTMLButtonElement>('.hero .seg__btn').forEach(b => {
   b.setAttribute('aria-pressed', String(b.dataset.pick === root.dataset.view));
 });
-lightTitle();
 
 // ---------- El día que avanza ----------
 const rows = document.querySelector<HTMLElement>('[data-rows]');
@@ -105,10 +86,24 @@ function activate(i: number) {
   steps.forEach((s, j) => s.classList.toggle('active', j === i));
   dots.forEach((d, j) => d.classList.toggle('on', j === i));
   const key = steps[i]?.dataset.key;
+  if (tourVisible && key) document.body.dataset.theme = key;
   if (tourPhone && key && tourPhone.dataset.screen !== key) {
     tourPhone.dataset.screen = key;
     if (key === 'notas') uncover(tourPhone);
   }
+}
+let tourVisible = false;
+const tour = document.querySelector<HTMLElement>('[data-tour]');
+if (tour) {
+  // Cada módulo se adueña de la pantalla con su color mientras se ve el recorrido.
+  new IntersectionObserver(([e]) => {
+    tourVisible = e.isIntersecting;
+    if (!tourVisible) delete document.body.dataset.theme;
+    else {
+      const active = steps.find(st => st.classList.contains('active'));
+      if (active?.dataset.key) document.body.dataset.theme = active.dataset.key;
+    }
+  }, { rootMargin: '-35% 0px -35% 0px' }).observe(tour);
 }
 if (steps.length) {
   activate(0);
@@ -171,4 +166,76 @@ document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach(b => {
       window.setTimeout(() => { b.textContent = label; }, 2400);
     } catch { /* sin permiso para el portapapeles */ }
   });
+});
+
+// ---------- Carrusel de módulos en el celular ----------
+const carousel = document.querySelector<HTMLElement>('[data-carousel]');
+const mdots = Array.from(document.querySelectorAll<HTMLElement>('[data-mdot]'));
+const narrow = window.matchMedia('(max-width: 859px)');
+if (carousel) {
+  const onScroll = () => {
+    if (!narrow.matches) return;
+    const center = carousel.scrollLeft + carousel.clientWidth / 2;
+    let best = 0;
+    let dist = Infinity;
+    steps.forEach((st, i) => {
+      const d = Math.abs(st.offsetLeft + st.offsetWidth / 2 - center);
+      if (d < dist) { dist = d; best = i; }
+    });
+    mdots.forEach((d, j) => d.classList.toggle('on', j === best));
+    if (tourVisible) {
+      const key = steps[best]?.dataset.key;
+      if (key) document.body.dataset.theme = key;
+      const p = steps[best]?.querySelector<HTMLElement>('.phone[data-screen="notas"]');
+      if (p) window.setTimeout(() => p.classList.add('uncovered'), reduce ? 0 : 1200);
+    }
+  };
+  carousel.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  // Con mouse también se arrastra.
+  let down: { x: number; left: number } | null = null;
+  carousel.addEventListener('pointerdown', e => {
+    if (e.pointerType !== 'mouse' || !narrow.matches) return;
+    down = { x: e.clientX, left: carousel.scrollLeft };
+    carousel.classList.add('dragging');
+  });
+  window.addEventListener('pointermove', e => { if (down) carousel.scrollLeft = down.left - (e.clientX - down.x); });
+  window.addEventListener('pointerup', () => { down = null; carousel.classList.remove('dragging'); });
+}
+
+// ---------- Teléfono que se inclina con el mouse ----------
+const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const tilt = document.querySelector<HTMLElement>('[data-tilt]');
+if (tilt && fine && !reduce) {
+  const zone = tilt.closest<HTMLElement>('.tour') ?? tilt;
+  zone.addEventListener('pointermove', e => {
+    const r = tilt.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width / 2)) / window.innerWidth;
+    const dy = (e.clientY - (r.top + r.height / 2)) / window.innerHeight;
+    tilt.style.setProperty('--ry', `${Math.max(-1, Math.min(1, dx * 2)) * 10}deg`);
+    tilt.style.setProperty('--rx', `${Math.max(-1, Math.min(1, -dy * 2)) * 8}deg`);
+  });
+  zone.addEventListener('pointerleave', () => { tilt.style.setProperty('--ry', '0deg'); tilt.style.setProperty('--rx', '0deg'); });
+}
+
+// ---------- Botones imán ----------
+if (fine && !reduce) {
+  document.querySelectorAll<HTMLElement>('.btn--pink, .btn--light, .mail__copy').forEach(btn => {
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - (r.left + r.width / 2)) * 0.25;
+      const y = (e.clientY - (r.top + r.height / 2)) * 0.35;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+    });
+    btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+  });
+}
+
+// ---------- Aparecer al hacer scroll (el "antes" se tacha solo) ----------
+const reveal = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); reveal.unobserve(e.target); } });
+}, { rootMargin: '0px 0px -12% 0px' });
+document.querySelectorAll('.swap, .kicker, .h2, .role__grid li, .steps li, .releases__list li, .cta__list li').forEach(el => {
+  el.classList.add('reveal');
+  reveal.observe(el);
 });
